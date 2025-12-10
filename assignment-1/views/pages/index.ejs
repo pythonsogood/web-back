@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<%- include("../partials/head"); %>
+		<link rel="stylesheet" href="static/css/pages/index.css">
+		<script src="static/js/pages/index.js"></script>
+	</head>
+	<body>
+		<header>
+			<%- include("../partials/header"); %>
+		</header>
+		<main>
+			<div class="container my-4">
+				<form class="card card-body row" onsubmit="onBMIFormSubmit(); return false;">
+					<div class="mb-3 col-12">
+						<label for="weight" class="form-label">Weight</label>
+						<input type="number" class="form-control" id="weight" aria-describedby="weight-help" required>
+						<div id="weight-help" class="form-text">In kilograms.</div>
+
+						<label for="height" class="form-label">Height</label>
+						<input type="number" class="form-control" id="height" aria-describedby="height-help" required>
+						<div id="height-help" class="form-text">In centimeters.</div>
+					</div>
+					<div class="col-12">
+						<div id="bmi">Your BMI: ?</div>
+					</div>
+					<div class="col-12">
+						<button type="submit" class="btn btn-primary float-end">Submit</button>
+					</div>
+				</form>
+			</div>
+		</main>
+		<footer>
+			<%- include("../partials/footer.ejs"); %>
+		</footer>
+	</body>
+</html>

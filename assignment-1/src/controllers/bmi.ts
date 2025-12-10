@@ -3,6 +3,12 @@ import { NextFunction, Request, Response } from "express";
 class BMIController {
 	constructor() {}
 
+	/**
+	 *
+	 * @param weight in kilograms
+	 * @param height in centimeters
+	 * @returns in kg/m^2
+	 */
 	public calculate_bmi(weight: number, height: number): number {
 		if (height == 0) {
 			return 0;
@@ -28,7 +34,7 @@ class BMIController {
 			return;
 		}
 
-		const bmi = this.calculate_bmi(weight, height);
+		const bmi = this.calculate_bmi(weight, height / 100);
 
 		await res.json({"bmi": bmi});
 	}
@@ -42,4 +48,4 @@ if (global.bmiController == undefined) {
 	global.bmiController = new BMIController();
 }
 
-export default global.bmiController;
+export const bmiController = global.bmiController;
