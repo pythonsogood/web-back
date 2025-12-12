@@ -1,0 +1,19 @@
+#bmi {
+	.value {
+		&.underweight {
+			color: aqua;
+		}
+
+		&.normal {
+			color: limegreen;
+		}
+
+		&.overweight {
+			color: yellow;
+		}
+
+		&.obese {
+			color: crimson;
+		}
+	}
+}

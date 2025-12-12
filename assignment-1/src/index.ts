@@ -1,6 +1,6 @@
+import path from "node:path";
 import express from "express";
 import { router as bmiRouter } from "./routers/bmi";
-import path from "node:path";
 
 const app = express();
 
@@ -13,8 +13,8 @@ app.use(express.json());
 
 app.use("/", bmiRouter);
 
-app.listen(8080, () => {
-	console.log("Server is running on port 8080");
+app.listen(3000, () => {
+	console.log("Server is running on port 3000");
 });
 
 export default app;

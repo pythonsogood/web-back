@@ -4,7 +4,6 @@ class BMIController {
 	constructor() {}
 
 	/**
-	 *
 	 * @param weight in kilograms
 	 * @param height in centimeters
 	 * @returns in kg/m^2
@@ -29,6 +28,13 @@ class BMIController {
 
 		if (typeof weight != "number" || typeof height != "number") {
 			await res.status(400).json({"message": "weight and height must be numbers!"});
+
+			next();
+			return;
+		}
+
+		if (weight <= 0 || height <= 0) {
+			await res.status(400).json({"message": "weight and height must be greater than 0!"});
 
 			next();
 			return;

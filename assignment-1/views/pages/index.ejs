@@ -14,15 +14,15 @@
 				<form class="card card-body row" onsubmit="onBMIFormSubmit(); return false;">
 					<div class="mb-3 col-12">
 						<label for="weight" class="form-label">Weight</label>
-						<input type="number" class="form-control" id="weight" aria-describedby="weight-help" required>
+						<input type="number" min="0" step="0.1" class="form-control" id="weight" aria-describedby="weight-help" required>
 						<div id="weight-help" class="form-text">In kilograms.</div>
 
 						<label for="height" class="form-label">Height</label>
-						<input type="number" class="form-control" id="height" aria-describedby="height-help" required>
+						<input type="number" min="0" step="0.1" class="form-control" id="height" aria-describedby="height-help" required>
 						<div id="height-help" class="form-text">In centimeters.</div>
 					</div>
 					<div class="col-12">
-						<div id="bmi">Your BMI: ?</div>
+						<div id="bmi">Your BMI: <span class="value">?</span> (<span class="category">?</span>)</div>
 					</div>
 					<div class="col-12">
 						<button type="submit" class="btn btn-primary float-end">Submit</button>
