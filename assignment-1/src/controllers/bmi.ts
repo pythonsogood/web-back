@@ -5,7 +5,7 @@ class BMIController {
 
 	/**
 	 * @param weight in kilograms
-	 * @param height in centimeters
+	 * @param height in meters
 	 * @returns in kg/m^2
 	 */
 	public calculate_bmi(weight: number, height: number): number {
