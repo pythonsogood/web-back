@@ -1,0 +1,1 @@
+{"root":["./src/index.ts","./src/controllers/animal.ts","./src/controllers/fact.ts","./src/controllers/weather.ts","./src/routers/animal.ts","./src/routers/fact.ts","./src/routers/weather.ts","./src/util/ip.ts"],"version":"5.9.3"}

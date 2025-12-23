@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<%- include("../partials/head"); %>
+		<link rel="stylesheet" href="static/css/pages/index.css">
+		<script src="static/js/pages/index.js"></script>
+	</head>
+	<body>
+		<header>
+			<%- include("../partials/header"); %>
+		</header>
+		<main>
+			<div class="container my-4">
+				<p>
+					<b>Random fact</b>: <span class="random-fact"><%- facts.random %></span>
+				</p>
+				<p>
+					<b>Fact of the day</b>: <span class="useless-fact"><%- facts.today %></span>
+				</p>
+
+				<figure class="mx-auto fit-content">
+					<img class="img-content rounded" src="<%- animal.fox %>" alt="random-fox">
+					<figcaption class="text-center">Random fox</figcaption>
+				</figure>
+
+				<% if (weather) { %>
+					<div class="weather mx-auto d-flex fit-content flex-row">
+						<div class="d-flex flex-column mx-2">
+							<div class="d-flex icon overflow-hidden mx-auto" style="width: 64px; height: 64px;">
+								<img src="<%- weather.icon %>" alt="weather-icon" style="width: 96px; height: 96px; margin-left: -16px; margin-top: -16px;">
+							</div>
+							<div class="description fit-content mx-auto text-center"><%- weather.description %></div>
+						</div>
+						<div class="mx-2 d-flex flex-column">
+							<div class="temperature">Temperature: <%- weather.temperature.toFixed(0) %> °C</div>
+							<div class="feels-like">Feels like: <%- weather.feels_like.toFixed(0) %> °C</div>
+							<div class="wind">Wind: <%- weather.wind_speed %> m/s</div>
+						</div>
+						<div class="mx-2 d-flex flex-column">
+							<div class="Precipitation">Precipitation: <%- weather.rain_volume %> mm/h</div>
+							<div class="humidity">Humidity: <%- weather.humidity %>%</div>
+							<div class="pressure">Pressure: <%- weather.pressure %> hPa</div>
+						</div>
+					</div>
+
+					<iframe class="d-flex mx-auto my-2" width="85%" height="400" frameborder="0" scrolling="no" src="https://www.openstreetmap.org/export/embed.html?bbox=<%= weather.longitude - 0.02 %>,<%= weather.latitude - 0.02 %>,<%= weather.longitude + 0.02 %>,<%= weather.latitude + 0.02 %>&layer=mapnik&marker=<%= weather.latitude %>,<%= weather.longitude %>"></iframe>
+				<% } %>
+			</div>
+		</main>
+		<footer>
+			<%- include("../partials/footer.ejs"); %>
+		</footer>
+	</body>
+</html>
