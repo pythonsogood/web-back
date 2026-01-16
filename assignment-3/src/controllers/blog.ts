@@ -64,7 +64,7 @@ class BlogController {
 
 		await blog.save();
 
-		await res.json({"message": "success"});
+		await res.json({"message": "success", "id": blog._id});
 	}
 
 	public async routePutBlogById(req: ExpressRequest, res: ExpressResponse, next: NextFunction): Promise<void> {
