@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<%- include("../partials/head"); %>
+		<link rel="stylesheet" href="static/css/pages/index.css">
+		<script src="static/js/pages/index.js"></script>
+	</head>
+	<body>
+		<header>
+			<%- include("../partials/header"); %>
+		</header>
+		<main>
+			<div class="container my-4">
+				<h3>Create blog</h3>
+				<form class="card card-body row" onsubmit="onBlogCreateFormSubmit(); return false;">
+					<div class="mb-3 col-12">
+						<label for="create-title" class="form-label">Title</label>
+						<input type="text" class="form-control" id="create-title" required>
+
+						<label for="create-body" class="form-label">Body</label>
+						<input type="text" class="form-control" id="create-body" required>
+
+						<label for="create-author" class="form-label">Author</label>
+						<input type="text" class="form-control" id="create-author">
+					</div>
+					<div class="col-12">
+						<button type="submit" class="btn btn-primary float-end">Create</button>
+					</div>
+				</form>
+				<h3>Get blog</h3>
+				<form class="card card-body row" onsubmit="onBlogGetFormSubmit(); return false;">
+					<div class="mb-3 col-12">
+						<label for="get-id" class="form-label">Id</label>
+						<input type="text" class="form-control" id="get-id" required>
+					</div>
+					<div class="col-12">
+						<button type="submit" class="btn btn-secondary float-end">Get</button>
+					</div>
+				</form>
+				<h3>Update blog</h3>
+				<form class="card card-body row" onsubmit="onBlogUpdateFormSubmit(); return false;">
+					<div class="mb-3 col-12">
+						<label for="update-id" class="form-label">Id</label>
+						<input type="text" class="form-control" id="update-id" required>
+
+						<label for="update-title" class="form-label">Title</label>
+						<input type="text" class="form-control" id="update-title">
+
+						<label for="update-body" class="form-label">Body</label>
+						<input type="text" class="form-control" id="update-body">
+
+						<label for="update-author" class="form-label">Author</label>
+						<input type="text" class="form-control" id="update-author">
+					</div>
+					<div class="col-12">
+						<button type="submit" class="btn btn-primary float-end">Update</button>
+					</div>
+				</form>
+				<h3>Delete blog</h3>
+				<form class="card card-body row" onsubmit="onBlogDeleteFormSubmit(); return false;">
+					<div class="mb-3 col-12">
+						<label for="delete-id" class="form-label">Id</label>
+						<input type="text" class="form-control" id="delete-id" required>
+					</div>
+					<div class="col-12">
+						<button type="submit" class="btn btn-danger float-end">Delete</button>
+					</div>
+				</form>
+			</div>
+		</main>
+		<footer>
+			<%- include("../partials/footer.ejs"); %>
+		</footer>
+	</body>
+</html>
