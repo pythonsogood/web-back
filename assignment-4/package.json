@@ -1,0 +1,32 @@
+{
+  "name": "assignment-4",
+  "version": "1.0.0",
+  "description": "",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "pnpm run build:typescript-backend && pnpm run build:typescript-frontend && pnpm run build:sass",
+    "build:typescript-backend": "tsc -b tsconfig.json",
+    "build:typescript-frontend": "tsc -b src/public/tsconfig.json",
+    "build:sass": "sass -I src/public/css --no-source-map src/public/css:dist/public/css",
+    "dev": "tsc --watch",
+    "start": "node dist/index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "MIT",
+  "packageManager": "pnpm@10.16.1",
+  "dependencies": {
+    "argon2": "^0.44.0",
+    "dotenv": "^17.2.3",
+    "ejs": "^4.0.1",
+    "express": "^5.2.1",
+    "mongoose": "^9.1.4"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.6",
+    "@types/node": "^25.0.9",
+    "sass": "^1.97.2",
+    "typescript": "^5.9.3"
+  }
+}
