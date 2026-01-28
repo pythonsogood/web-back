@@ -1,33 +1,57 @@
 import { NextFunction, Request as ExpressRequest, Response as ExpressResponse } from "express";
-import { mongo } from "mongoose";
-import { User } from "../models/user";
-import * as argon2 from "argon2";
+import { UserModel, UserDocument } from "../models/user";
 
 class UserController {
-	PASSWORD_HASH_OPTIONS: argon2.Options = {
-		timeCost: 2,
-		memoryCost: 19 * 1000 * 1000,
-		parallelism: 1,
-		type: argon2.argon2id,
-	};
-
 	constructor() {}
 
-	public async hashPassword(password: string): Promise<string> {
-		const hashed_password = await argon2.hash(password, this.PASSWORD_HASH_OPTIONS);
+	public async routePostRegister(req: ExpressRequest, res: ExpressResponse, next: NextFunction): Promise<void> {
+		const { name, email, password } = req.body;
 
-		return hashed_password;
+		if (typeof name != "string" || typeof email != "string" || typeof password != "string") {
+			await res.status(400).json({"message": "name, email and password must be strings"});
+
+			next();
+			return;
+		}
+
+		const user = await UserModel.create({ "name": name, "email": email, "password": UserModel. });
+
+		await user.save();
+
+		(req.session as any).userId = user._id.toString("hex");
+
+		await res.json({"message": "success"});
 	}
 
-	public async verifyPassword(password: string, password_hash: string): Promise<boolean> {
-		return await argon2.verify(password_hash, password, this.PASSWORD_HASH_OPTIONS);
+	public async routePostLogin(req: ExpressRequest, res: ExpressResponse, next: NextFunction): Promise<void> {
+		const { email, password } = req.body;
+
+		if (typeof email != "string" || typeof password != "string") {
+			await res.status(400).json({"message": "email and password must be strings"});
+
+			next();
+			return;
+		}
+
+		const user = await UserModel.findOne({ "email": email }) as any as UserDocument;
+
+		if (user == null || !user.verify_password(password)) {
+			await res.status(401).json({"message": "invalid credentials"});
+
+			next();
+			return;
+		}
+
+		(req.session as any).userId = user._id.toString("hex");
+
+		await res.json({"message": "success"});
 	}
 
-	public async routePostRegister(req: ExpressRequest, res: ExpressResponse, next: NextFunction): Promise<void> {}
-
-	public async routePostLogin(req: ExpressRequest, res: ExpressResponse, next: NextFunction): Promise<void> {}
-
-	public async routePostLogout(req: ExpressRequest, res: ExpressResponse, next: NextFunction): Promise<void> {}
+	public async routePostLogout(req: ExpressRequest, res: ExpressResponse, next: NextFunction): Promise<void> {
+		req.session.destroy(() => {
+			res.json({"message": "success"});
+		});
+	}
 
 	public async routeGetProfile(req: ExpressRequest, res: ExpressResponse, next: NextFunction): Promise<void> {}
 }
