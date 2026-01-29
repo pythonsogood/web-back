@@ -14,7 +14,7 @@ class UserController {
 			return;
 		}
 
-		const user = await UserModel.create({ "name": name, "email": email, "password": UserModel. });
+		const user = await UserModel.create({ "name": name, "email": email, "password": await UserModel.hash_password(password) });
 
 		await user.save();
 
@@ -33,7 +33,7 @@ class UserController {
 			return;
 		}
 
-		const user = await UserModel.findOne({ "email": email }) as any as UserDocument;
+		const user = await UserModel.findOne({ "email": email });
 
 		if (user == null || !user.verify_password(password)) {
 			await res.status(401).json({"message": "invalid credentials"});
@@ -48,6 +48,8 @@ class UserController {
 	}
 
 	public async routePostLogout(req: ExpressRequest, res: ExpressResponse, next: NextFunction): Promise<void> {
+		console.log((req.session as any).userId);
+
 		req.session.destroy(() => {
 			res.json({"message": "success"});
 		});

@@ -1,4 +1,4 @@
-import { HydratedDocument, InferSchemaType, Model, model, Schema } from "mongoose";
+import { HydratedDocument, Model, model, Schema } from "mongoose";
 import * as argon2 from "argon2";
 import bcrypt from "bcryptjs";
 
@@ -13,13 +13,15 @@ export interface IUser {
 	name: string;
 	email: string;
 	password: string;
+
+	verify_password(password: string): Promise<boolean>;
 }
 
-export interface UserModelType {
+export interface UserModelType extends Model<IUser> {
 	hash_password(password: string): Promise<string>;
 }
 
-const userSchema = new Schema({
+const userSchema = new Schema<IUser, UserModelType>({
 	name: {type: String, required: true},
 	email: {type: String, required: true, unique: true},
 	password: {type: String, required: true},
@@ -44,13 +46,6 @@ userSchema.method("verify_password", async function(password: string): Promise<b
 	return await argon2.verify(this.password, password, PASSWORD_HASH_OPTIONS);
 });
 
-export const UserModel = model<typeof userSchema>("User", userSchema);
+export const UserModel = model<IUser, UserModelType>("User", userSchema);
 
-export type UserDocument = HydratedDocument<InferSchemaType<typeof userSchema>>;
-
-
-// async function main() {
-// 	const user = await UserModel.findOne({ "email": "123" });
-
-// 	user?.verify_password("123");
-// }
+export type UserDocument = HydratedDocument<IUser>;
