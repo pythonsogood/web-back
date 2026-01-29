@@ -1,10 +1,11 @@
 import { HydratedDocument, Model, model, Schema } from "mongoose";
 import * as argon2 from "argon2";
 import bcrypt from "bcryptjs";
+import * as email_validator from "email-validator";
 
 const PASSWORD_HASH_OPTIONS: argon2.Options = {
 	timeCost: 2,
-	memoryCost: 19 * 1000 * 1000,
+	memoryCost: 19 * 1024,
 	parallelism: 1,
 	type: argon2.argon2id,
 };
@@ -23,7 +24,12 @@ export interface UserModelType extends Model<IUser> {
 
 const userSchema = new Schema<IUser, UserModelType>({
 	name: {type: String, required: true},
-	email: {type: String, required: true, unique: true},
+	email: {type: String, required: true, unique: true, validate: {
+		validator: (email: string) => {
+			return email_validator.validate(email);
+		},
+		message: "invalid email",
+	}},
 	password: {type: String, required: true},
 }, {
 	collection: "users",

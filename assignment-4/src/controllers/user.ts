@@ -1,5 +1,11 @@
 import { NextFunction, Request as ExpressRequest, Response as ExpressResponse } from "express";
-import { UserModel, UserDocument } from "../models/user";
+import { UserModel } from "../models/user";
+
+declare module "express-session" {
+	interface SessionData {
+		userId: string | undefined;
+	}
+}
 
 class UserController {
 	constructor() {}
@@ -14,11 +20,19 @@ class UserController {
 			return;
 		}
 
-		const user = await UserModel.create({ "name": name, "email": email, "password": await UserModel.hash_password(password) });
+		let user;
+
+		try {
+			user = await UserModel.create({ "name": name, "email": email, "password": await UserModel.hash_password(password) });
+		} catch (error) {
+			await res.status(400);
+
+			throw error;
+		}
 
 		await user.save();
 
-		(req.session as any).userId = user._id.toString("hex");
+		req.session.userId = user._id.toString("hex");
 
 		await res.json({"message": "success"});
 	}
@@ -35,27 +49,43 @@ class UserController {
 
 		const user = await UserModel.findOne({ "email": email });
 
-		if (user == null || !user.verify_password(password)) {
+		if (user == null || !await user.verify_password(password)) {
 			await res.status(401).json({"message": "invalid credentials"});
 
 			next();
 			return;
 		}
 
-		(req.session as any).userId = user._id.toString("hex");
+		req.session.userId = user._id.toString("hex");
 
 		await res.json({"message": "success"});
 	}
 
 	public async routePostLogout(req: ExpressRequest, res: ExpressResponse, next: NextFunction): Promise<void> {
-		console.log((req.session as any).userId);
-
 		req.session.destroy(() => {
 			res.json({"message": "success"});
 		});
 	}
 
-	public async routeGetProfile(req: ExpressRequest, res: ExpressResponse, next: NextFunction): Promise<void> {}
+	public async routeGetProfile(req: ExpressRequest, res: ExpressResponse, next: NextFunction): Promise<void> {
+		if (req.session.userId == undefined) {
+			await res.status(401).json({"message": "not logged in"});
+
+			next();
+			return;
+		}
+
+		const user = await UserModel.findById(req.session.userId);
+
+		if (user == null) {
+			await res.status(404).json({"message": "user not found"});
+
+			next();
+			return;
+		}
+
+		await res.json({"name": user.name, "email": user.email});
+	}
 }
 
 declare global {

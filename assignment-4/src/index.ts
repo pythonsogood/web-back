@@ -1,6 +1,6 @@
 import path from "node:path";
 import "dotenv/config";
-import express from "express";
+import express, { NextFunction, Request, Response } from "express";
 import { router as authRouter } from "./routers/auth";
 import * as db from "./config/db";
 import session from "express-session";
@@ -32,6 +32,8 @@ app.use(express.json());
 app.use(session({
 	name: "sid",
 	secret: SESSION_SECRET,
+	resave: false,
+	saveUninitialized: true,
 	cookie: {
 		httpOnly: true,
 		secure: false,
@@ -39,6 +41,12 @@ app.use(session({
 	},
 }));
 app.use("/api/auth", authRouter);
+
+app.use(async (err: Error, req: Request, res: Response, next: NextFunction): Promise<void> => {
+	console.log(err.stack);
+
+	await res.status(res.statusCode >= 400 && res.statusCode < 600 ? res.statusCode : 500).json({"message": err.message});
+});
 
 app.listen(APP_PORT, async () => {
 	await db.configure();

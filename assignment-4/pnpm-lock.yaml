@@ -20,6 +20,9 @@ importers:
       ejs:
         specifier: ^4.0.1
         version: 4.0.1
+      email-validator:
+        specifier: ^2.0.4
+        version: 2.0.4
       express:
         specifier: ^5.2.1
         version: 5.2.1
@@ -292,6 +295,10 @@ packages:
     resolution: {integrity: sha512-krvQtxc0btwSm/nvnt1UpnaFDFVJpJ0fdckmALpCgShsr/iGYHTnJiUliZTgmzq/UxTX33TtOQVKaNigMQp/6Q==}
     engines: {node: '>=0.12.18'}
     hasBin: true
+
+  email-validator@2.0.4:
+    resolution: {integrity: sha512-gYCwo7kh5S3IDyZPLZf6hSS0MnZT8QmJFqYvbqlDZSbwdZlY6QZWxJ4i/6UhITOJ4XzyI647Bm2MXKCLqnJ4nQ==}
+    engines: {node: '>4.0'}
 
   encodeurl@2.0.0:
     resolution: {integrity: sha512-Q0n9HRi4m6JuGIV1eFlmvJB7ZEVxu93IrMyiMsGC0lrMJMWzRgx6WGquyfQgZVb31vhGgXnfmPNNXmxnOkRBrg==}
@@ -890,6 +897,8 @@ snapshots:
   ejs@4.0.1:
     dependencies:
       jake: 10.9.4
+
+  email-validator@2.0.4: {}
 
   encodeurl@2.0.0: {}
 
