@@ -1,5 +1,6 @@
 import { NextFunction, Request as ExpressRequest, Response as ExpressResponse } from "express";
 import { UserModel } from "../models/user";
+import { validationResult } from "express-validator";
 
 declare module "express-session" {
 	interface SessionData {
@@ -11,19 +12,20 @@ class UserController {
 	constructor() {}
 
 	public async routePostRegister(req: ExpressRequest, res: ExpressResponse, next: NextFunction): Promise<void> {
-		const { name, email, password } = req.body;
+		const validation_result = validationResult(req);
 
-		if (typeof name != "string" || typeof email != "string" || typeof password != "string") {
-			await res.status(400).json({"message": "name, email and password must be strings"});
+		if (!validation_result.isEmpty()) {
+			await res.status(400);
 
-			next();
-			return;
+			throw new Error(JSON.stringify(validation_result.array()));
 		}
+
+		const { username, email, password } = req.body;
 
 		let user;
 
 		try {
-			user = await UserModel.create({ "name": name, "email": email, "password": await UserModel.hash_password(password) });
+			user = await UserModel.create({ "username": username, "email": email, "password": await UserModel.hash_password(password) });
 		} catch (error) {
 			await res.status(400);
 
@@ -32,20 +34,19 @@ class UserController {
 
 		await user.save();
 
-		req.session.userId = user._id.toString("hex");
-
 		await res.json({"message": "success"});
 	}
 
 	public async routePostLogin(req: ExpressRequest, res: ExpressResponse, next: NextFunction): Promise<void> {
-		const { email, password } = req.body;
+		const validation_result = validationResult(req);
 
-		if (typeof email != "string" || typeof password != "string") {
-			await res.status(400).json({"message": "email and password must be strings"});
+		if (!validation_result.isEmpty()) {
+			await res.status(400);
 
-			next();
-			return;
+			throw new Error(JSON.stringify(validation_result.array()));
 		}
+
+		const { email, password } = req.body;
 
 		const user = await UserModel.findOne({ "email": email });
 
@@ -56,25 +57,13 @@ class UserController {
 			return;
 		}
 
-		req.session.userId = user._id.toString("hex");
-
 		await res.json({"message": "success"});
 	}
 
 	public async routePostLogout(req: ExpressRequest, res: ExpressResponse, next: NextFunction): Promise<void> {
-		req.session.destroy(() => {
-			res.json({"message": "success"});
-		});
 	}
 
 	public async routeGetProfile(req: ExpressRequest, res: ExpressResponse, next: NextFunction): Promise<void> {
-		if (req.session.userId == undefined) {
-			await res.status(401).json({"message": "not logged in"});
-
-			next();
-			return;
-		}
-
 		const user = await UserModel.findById(req.session.userId);
 
 		if (user == null) {
@@ -84,7 +73,7 @@ class UserController {
 			return;
 		}
 
-		await res.json({"name": user.name, "email": user.email});
+		await res.json({"username": user.username, "email": user.email});
 	}
 }
 

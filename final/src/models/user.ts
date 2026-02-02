@@ -9,7 +9,7 @@ const PASSWORD_HASH_OPTIONS: argon2.Options = {
 };
 
 export interface IUser {
-	name: string;
+	username: string;
 	email: string;
 	password: string;
 
@@ -21,7 +21,7 @@ export interface UserModelType extends Model<IUser> {
 }
 
 const userSchema = new Schema<IUser, UserModelType>({
-	name: {type: String, required: true},
+	username: {type: String, required: true},
 	email: {type: String, required: true, unique: true, validate: {
 		validator: (email: string) => {
 			return true;
