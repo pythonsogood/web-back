@@ -4,10 +4,8 @@
   "description": "",
   "main": "dist/index.js",
   "scripts": {
-    "build": "pnpm run build:typescript-backend && pnpm run build:typescript-frontend && pnpm run build:sass",
+    "build": "pnpm run build:typescript-backend",
     "build:typescript-backend": "tsc -b tsconfig.json",
-    "build:typescript-frontend": "tsc -b src/public/tsconfig.json",
-    "build:sass": "sass -I src/public/css --no-source-map src/public/css:dist/public/css",
     "dev": "tsc --watch",
     "start": "node dist/index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -20,7 +18,6 @@
     "argon2": "^0.44.0",
     "cookie-parser": "^1.4.7",
     "dotenv": "^17.2.3",
-    "ejs": "^4.0.1",
     "express": "^5.2.1",
     "express-fileupload": "^1.5.2",
     "express-jwt": "^8.5.1",

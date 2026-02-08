@@ -23,7 +23,6 @@ const APP_PORT = parseInt(process.env.PORT);
 const app = express();
 
 app.set("trust proxy", true);
-app.set("view engine", "ejs");
 app.set("views", "views");
 
 app.use("/static", express.static(path.join(__dirname, "public")));
