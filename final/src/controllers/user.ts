@@ -1,25 +1,11 @@
 import { NextFunction, Request as ExpressRequest, Response as ExpressResponse } from "express";
 import { UserModel } from "../models/user";
-import { validationResult } from "express-validator";
-
-declare module "express-session" {
-	interface SessionData {
-		userId: string | undefined;
-	}
-}
+import { Request as ExpressJWTRequest } from "express-jwt";
 
 class UserController {
 	constructor() {}
 
 	public async routePostRegister(req: ExpressRequest, res: ExpressResponse, next: NextFunction): Promise<void> {
-		const validation_result = validationResult(req);
-
-		if (!validation_result.isEmpty()) {
-			await res.status(400);
-
-			throw new Error(JSON.stringify(validation_result.array()));
-		}
-
 		const { username, email, password } = req.body;
 
 		let user;
@@ -34,18 +20,14 @@ class UserController {
 
 		await user.save();
 
-		await res.json({"message": "success"});
+		const token = await user.create_jwt();
+
+		res.cookie("Authorization-Token", token);
+
+		await res.json({"message": "success", "data": token});
 	}
 
 	public async routePostLogin(req: ExpressRequest, res: ExpressResponse, next: NextFunction): Promise<void> {
-		const validation_result = validationResult(req);
-
-		if (!validation_result.isEmpty()) {
-			await res.status(400);
-
-			throw new Error(JSON.stringify(validation_result.array()));
-		}
-
 		const { email, password } = req.body;
 
 		const user = await UserModel.findOne({ "email": email });
@@ -57,14 +39,26 @@ class UserController {
 			return;
 		}
 
-		await res.json({"message": "success"});
+		const token = await user.create_jwt();
+
+		res.cookie("Authorization-Token", token);
+
+		await res.json({"message": "success", "data": token});
 	}
 
 	public async routePostLogout(req: ExpressRequest, res: ExpressResponse, next: NextFunction): Promise<void> {
+		res.clearCookie("Authorization-Token");
 	}
 
-	public async routeGetProfile(req: ExpressRequest, res: ExpressResponse, next: NextFunction): Promise<void> {
-		const user = await UserModel.findById(req.session.userId);
+	public async routeGetProfile(req: ExpressJWTRequest, res: ExpressResponse, next: NextFunction): Promise<void> {
+		if (req.auth == undefined) {
+			await res.status(401).json({"message": "not logged in"});
+
+			next();
+			return;
+		}
+
+		const user = await UserModel.findById(req.auth.sub);
 
 		if (user == null) {
 			await res.status(404).json({"message": "user not found"});
@@ -73,7 +67,33 @@ class UserController {
 			return;
 		}
 
-		await res.json({"username": user.username, "email": user.email});
+		await res.json({"message": "success", "data": {"username": user.username, "email": user.email}});
+	}
+
+	public async routePutProfile(req: ExpressJWTRequest, res: ExpressResponse, next: NextFunction): Promise<void> {
+		if (req.auth == undefined) {
+			await res.status(401).json({"message": "not logged in"});
+
+			next();
+			return;
+		}
+
+		const user = await UserModel.findById(req.auth.sub);
+
+		if (user == null) {
+			await res.status(404).json({"message": "user not found"});
+
+			next();
+			return;
+		}
+
+		const { gender } = req.body;
+
+		user.gender = gender;
+
+		await user.save();
+
+		await res.json({"message": "success"});
 	}
 }
 

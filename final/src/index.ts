@@ -1,7 +1,11 @@
 import path from "node:path";
 import "dotenv/config";
 import express, { NextFunction, Request, Response } from "express";
+import cookieParser from "cookie-parser";
+import fileUpload from "express-fileupload";
 import { router as authRouter } from "./routers/auth";
+import { router as userRouter } from "./routers/user";
+import { router as resourceRouter } from "./routers/resource";
 import * as db from "./config/db";
 
 declare global {
@@ -23,9 +27,19 @@ app.set("view engine", "ejs");
 app.set("views", "views");
 
 app.use("/static", express.static(path.join(__dirname, "public")));
+app.use("/resources", express.static(path.join(__dirname, "..", "static", "resources")));
 
 app.use(express.json());
+app.use(cookieParser());
+app.use(fileUpload({
+	limits: {
+		fileSize: 10 * 1024 * 1024,
+	},
+}));
+
 app.use("/api/auth", authRouter);
+app.use("/api/users", userRouter);
+app.use("/api/resources", resourceRouter);
 
 app.use(async (err: Error, req: Request, res: Response, next: NextFunction): Promise<void> => {
 	console.log(err.stack);
