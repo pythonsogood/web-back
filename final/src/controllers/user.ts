@@ -48,6 +48,8 @@ class UserController {
 
 	public async routePostLogout(req: ExpressRequest, res: ExpressResponse, next: NextFunction): Promise<void> {
 		res.clearCookie("Authorization-Token");
+
+		await res.json({"message": "success"});
 	}
 
 	public async routeGetProfile(req: ExpressJWTRequest, res: ExpressResponse, next: NextFunction): Promise<void> {
@@ -67,7 +69,7 @@ class UserController {
 			return;
 		}
 
-		await res.json({"message": "success", "data": {"username": user.username, "email": user.email}});
+		await res.json({"message": "success", "data": {"username": user.username, "email": user.email, "gender": user.gender}});
 	}
 
 	public async routePutProfile(req: ExpressJWTRequest, res: ExpressResponse, next: NextFunction): Promise<void> {
